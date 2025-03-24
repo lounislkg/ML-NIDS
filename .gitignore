@@ -1,8 +1,7 @@
 MachineLearningCVE
-MachineLearningCVE\*.csv
-MachineLearningCVE\*.zip
-ifvenv\*
 ifvenv
 *.csv
 *.zip
 *.xlsx
+rootme
+pkl
