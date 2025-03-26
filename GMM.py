@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-data_set = pd.read_csv('archive/dataSampled.csv')
+data_set = pd.read_csv('archive/dataSampled2.csv')
  
 #split with datas and labels
 X = data_set.drop(' Label', axis=1)
@@ -97,8 +97,10 @@ print(f"Accuracy on test set: {test_accuracy:.2f}")
 
 from sklearn.metrics import classification_report, confusion_matrix
 
-# Convert labels to binary (1 = malware, 0 = benign)
-malware_label = 1  # Change if needed based on how malware is labeled in y_test
+# Convert labels to binary (1 to 6 = malware, 0 = benign)
+malware_label = 1
+y_train_binary = np.where(y_train == malware_label, 1, 0)
+
 y_test_binary = np.where(y_test == malware_label, 1, 0)
 
 # Convert GMM anomalies to binary (1 = malware, 0 = benign)

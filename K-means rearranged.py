@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np  
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Load dataset
+data_set = pd.read_csv('archive/dataSampled2.csv')
+
+# Split features and labels
+X = data_set.drop(' Label', axis=1)
+y = data_set[' Label']
+
+# Handle infinite values
+X.replace([np.inf, -np.inf], np.nan, inplace=True)
+X.fillna(0, inplace=True)
+
+# Normalize data
+scaler = MinMaxScaler()
+X = scaler.fit_transform(X)
+
+# Encode labels
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(y)
+
+# Apply PCA (keep 99% variance)
+pca = PCA(n_components=0.99)
+X = pca.fit_transform(X)
+print(f"Original shape: {data_set.shape}, Reduced shape: {X.shape}")
+
+# Split data
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Train K-Means with 3 clusters
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X)
+
+# Get cluster assignments
+train_clusters = kmeans.predict(x_train)
+test_clusters = kmeans.predict(x_test)
+
+# Map clusters to actual labels
+mapping = {}
+for cluster in np.unique(train_clusters):
+    mask = (train_clusters == cluster)
+    majority_class = np.bincount(y_train[mask]).argmax()
+    mapping[cluster] = majority_class
+
+# Convert clusters to predicted labels
+y_train_pred = np.array([mapping[c] for c in train_clusters])
+y_test_pred = np.array([mapping[c] for c in test_clusters])
+
+# Calculate accuracy
+train_accuracy = accuracy_score(y_train, y_train_pred)
+test_accuracy = accuracy_score(y_test, y_test_pred)
+
+print(f"Accuracy on training set: {train_accuracy:.2f}")
+print(f"Accuracy on test set: {test_accuracy:.2f}")
+
+# Convert labels to binary (1 = malware, 0 = benign)
+malware_label = 1
+y_train_binary = np.where(y_train == malware_label, 1, 0)
+y_test_binary = np.where(y_test == malware_label, 1, 0)
+
+# Convert K-Means predictions to binary
+kmeans_predictions = np.where(y_test_pred == malware_label, 1, 0)
+
+# Evaluate the model
+print("Confusion Matrix:\n", confusion_matrix(y_test_binary, kmeans_predictions))
+print("\nClassification Report:\n", classification_report(y_test_binary, kmeans_predictions))
