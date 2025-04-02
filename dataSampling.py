@@ -61,7 +61,7 @@ print(f"Le nombre total d'échantillons est de {totalSamples}")
 print("taille de df_s: ", len(df_s))
 print("Soit une réduction de : ", len(df_s)/totalSamples*100, "%")
 print(df_s[' Label'].value_counts())
-df_s.to_csv("MachineLearningCVE\\dataSampled_Grouped.csv", index=False)
+#df_s.to_csv("MachineLearningCVE\\dataSampled_Grouped.csv", index=False)
 
 """Certains échantillons sont largement minoritaires (11 occurences de Heartbleed, 36 Infiltration...)
 mais ces très faible échantillon ne permettent même pas d'oversampling car il risquerait de créer du bruit plus qu'autre chose.
