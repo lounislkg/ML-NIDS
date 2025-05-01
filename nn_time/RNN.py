@@ -133,7 +133,7 @@ X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, s
 
 # oversampling
 from imblearn.over_sampling import SMOTE
-from tensorflow.keras.layers import Dense, GRU, Dropout
+from tensorflow.keras.layers import Dense, Dropout, SimpleRNN
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
@@ -184,35 +184,16 @@ def test(e=5, iter=0):
     # Modèle pour de la classification avec 7 sorties (7 classes) 
     if iter == 0:
         model = Sequential([
-            GRU(16, input_shape=(4, 78), return_sequences=True, kernel_regularizer=l2(0.001)),
+            SimpleRNN(16, input_shape=(4, 78), return_sequences=True, kernel_regularizer=l2(0.001)),
             Dropout(0.3),
-            GRU(16, input_shape=(4, 78), return_sequences=True, kernel_regularizer=l2(0.001)),
+            SimpleRNN(16, input_shape=(4, 78), return_sequences=True, kernel_regularizer=l2(0.001)),
             Dropout(0.3),
-            GRU(16, return_sequences=False),
+            SimpleRNN(16, return_sequences=False),
             Dense(7, activation='softmax')
         ])
-    """ if iter == 1:
-        model = Sequential([
-            GRU(64, input_shape=(4, 78), kernel_regularizer=l2(0.001)),
-            Dropout(0.5),
-            GRU(16, input_shape=(4, 78), kernel_regularizer=l2(0.001)),
-            Dense(7, activation='softmax')
-        ])
-    if iter == 2:
-        model = Sequential([
-            GRU(64, input_shape=(4, 78), kernel_regularizer=l2(0.0001)),
-            Dropout(0.5),
-            Dense(7, activation='softmax')
-        ])
-    if iter == 3:
-        model = Sequential([
-            GRU(64, input_shape=(4, 78), kernel_regularizer=l2(0.01)),
-            Dense(7, activation='softmax')
-        ]) """
+        
     # Early stopping
     optimizer = Adam(learning_rate=1e-4)
-
-
     
     model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy',  tf.keras.metrics.Precision(name='precision_macro'), tf.keras.metrics.Recall(name='recall_macro')])
     model.summary()
@@ -225,7 +206,6 @@ def test(e=5, iter=0):
     class_weights = dict(enumerate(class_weights))
     
     model.fit(X_train, y_train, epochs=e, batch_size=32, validation_data=(X_val, y_val), callbacks=[early_stopping], class_weight=class_weights)
-
 
     # Evaluate the model
     # Calcul des métriques
@@ -248,5 +228,5 @@ def test(e=5, iter=0):
     print(np.unique(y_test_classes, return_counts=True))
     print(np.unique(y_pred_classes, return_counts=True))
 
-    
-test(e=1, iter=0)
+
+test(e=5, iter=0)
