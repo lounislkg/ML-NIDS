@@ -4,4 +4,6 @@ ifvenv
 *.zip
 *.xlsx
 rootme
-pkl
+*.pkl
+*.h5
+*.joblib

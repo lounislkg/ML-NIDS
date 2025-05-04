@@ -1,4 +1,5 @@
 import joblib 
+import os 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.metrics import classification_report,confusion_matrix,accuracy_score,precision_recall_fscore_support
@@ -10,8 +11,8 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 
-X_fs = joblib.load('.\\pkl\\train_with_group_classes\\X_fs.pkl')
-y = joblib.load('.\\pkl\\train_with_group_classes\\y.pkl')
+X_fs = joblib.load('X_fs.pkl')
+y = joblib.load('y.pkl')
 
 X_fs = pd.DataFrame(X_fs)
 
@@ -24,30 +25,42 @@ X_fs = X_fs.fillna(0)
 X_train, X_test, y_train, y_test = train_test_split(X_fs, y, test_size=0.2, random_state=0)
 
 # Decision Tree training and prediction
-dt = DecisionTreeClassifier(random_state=42)
-dt.fit(X_train, y_train)
-dt_train = dt.predict(X_train)
-dt_test = dt.predict(X_test)
+if(os.path.exists('dt.pkl')):
+    dt_train=joblib.load('dt.pkl')
+else:
+	dt = DecisionTreeClassifier(random_state=42)
+	dt.fit(X_train, y_train)
+	dt_train = dt.predict(X_train)
+	dt_test = dt.predict(X_test)
 
 
 # Random Forest training and prediction
-rf = RandomForestClassifier(random_state = 0)
-rf.fit(X_train,y_train)
-rf_train = rf.predict(X_train)
-rf_test = rf.predict(X_test)   
+if (os.path.exists('rf.pkl')):
+    rf_train=joblib.load('rf.pkl')
+else:
+	rf = RandomForestClassifier(random_state = 0)
+	rf.fit(X_train,y_train)
+	rf_train = rf.predict(X_train)
+	rf_test = rf.predict(X_test)   
 
 # Extra Trees training and prediction
-et = ExtraTreesClassifier(random_state = 0)
-et.fit(X_train,y_train)
-et_train = et.predict(X_train)
-et_test = et.predict(X_test)
+if (os.path.exists('et.pkl')):
+    et_train=joblib.load('et.pkl')
+else:
+	et = ExtraTreesClassifier(random_state = 0)
+	et.fit(X_train,y_train)
+	et_train = et.predict(X_train)
+	et_test = et.predict(X_test)
 
 # XGBoost training and prediction
-xg = xgb.XGBClassifier(tree_method="hist", random_state = 0)
-xg.fit(X_train,y_train)
-xg_train = xg.predict(X_train)
-xg_test = xg.predict(X_test)
-print(xg_train.shape)
+if (os.path.exists('xg.pkl')):
+    xg_train=joblib.load('xg.pkl')
+else:
+	xg = xgb.XGBClassifier(tree_method="hist", random_state = 0)
+	xg.fit(X_train,y_train)
+	xg_train = xg.predict(X_train)
+	xg_test = xg.predict(X_test)
+
 base_predictions_train = pd.DataFrame( {
     'DecisionTree': dt_train.ravel(),
         'RandomForest': rf_train.ravel(),
@@ -61,10 +74,10 @@ et_train=et_train.reshape(-1, 1)
 rf_train=rf_train.reshape(-1, 1)
 xg_train=xg_train.reshape(-1, 1)
 
-dt_test=dt_test.reshape(-1, 1)
-et_test=et_test.reshape(-1, 1)
-rf_test=rf_test.reshape(-1, 1)
-xg_test=xg_test.reshape(-1, 1)
+# dt_test=dt_test.reshape(-1, 1)
+# et_test=et_test.reshape(-1, 1)
+# rf_test=rf_test.reshape(-1, 1)
+# xg_test=xg_test.reshape(-1, 1)
 
 x_train = np.concatenate(( dt_train, et_train, rf_train, xg_train), axis=1)
 x_test = np.concatenate(( dt_test, et_test, rf_test, xg_test), axis=1)
@@ -85,3 +98,4 @@ sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
 plt.xlabel("y_pred")
 plt.ylabel("y_true")
 plt.show()
+joblib.dump(stk, 'stk.pkl') #pour sauvegarder le modèle

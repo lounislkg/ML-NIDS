@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 import os
 
-dataset = pd.read_csv('MachineLearningCVE\\dataSampled_Grouped.csv')
+dataset = pd.read_csv('MachineLearningCVE/dataSampled_Grouped.csv')
 
 #split with datas and labels
 X = dataset.drop(' Label', axis=1)
@@ -34,7 +34,7 @@ y = labelencoder.fit_transform(y)  # Encodage de la dernière colonne
 #split with train and test
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify=y)
 
 
 # oversampling
@@ -50,7 +50,7 @@ print(pd.Series(y_train).value_counts())
 print("____TEST____")
 print("X test shape : ", X_test.shape)
 print(pd.Series(y_test).value_counts())
-joblib.dump(y, 'y.pkl')
+#joblib.dump(y, 'y.pkl')
 #train models
 from sklearn.ensemble import RandomForestClassifier,ExtraTreesClassifier
 from xgboost import XGBClassifier
@@ -71,7 +71,7 @@ else:
 dt_score=dt.score(X_test,y_test)
 y_predict=dt.predict(X_test)
 y_true=y_test
-""" print('Accuracy of DT: '+ str(dt_score))
+print('Accuracy of DT: '+ str(dt_score))
 precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
 print('Precision of DT: '+(str(precision)))
 print('Recall of DT: '+(str(recall)))
@@ -82,11 +82,11 @@ f,ax=plt.subplots(figsize=(5,5))
 sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
 plt.xlabel("y_pred")
 plt.ylabel("y_true")
-plt.show()  """
+plt.show()
 # dt_train = dt.predict(X_train)
 # dt_test = dt.predict(X_test)
 
-joblib.dump(dt, 'dt.pkl') #pour sauvegarder le modèle
+# joblib.dump(dt, 'dt.pkl') #pour sauvegarder le modèle
 
 
 
@@ -99,7 +99,7 @@ else:
 rf_score=rf.score(X_test,y_test)
 y_predict=rf.predict(X_test)
 y_true=y_test
-""" print('Accuracy of RF: '+ str(rf_score))
+print('Accuracy of RF: '+ str(rf_score))
 precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
 print('Precision of RF: '+(str(precision)))
 print('Recall of RF: '+(str(recall)))
@@ -110,10 +110,10 @@ f,ax=plt.subplots(figsize=(5,5))
 sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
 plt.xlabel("y_pred")
 plt.ylabel("y_true")
-plt.show()  """
+plt.show()  
 # rf_train = rf.predict(X_train)
 # rf_test = rf.predict(X_test)
-joblib.dump(rf, 'rf.pkl') #pour sauvegarder le modèle
+# joblib.dump(rf, 'rf.pkl') #pour sauvegarder le modèle
 
 
 # Extra trees training and prediction
@@ -125,7 +125,7 @@ else:
 et_score=et.score(X_test,y_test)
 y_predict=et.predict(X_test)
 y_true=y_test
-""" print('Accuracy of ET: '+ str(et_score))
+print('Accuracy of ET: '+ str(et_score))
 precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
 print('Precision of ET: '+(str(precision)))
 print('Recall of ET: '+(str(recall)))
@@ -136,11 +136,11 @@ f,ax=plt.subplots(figsize=(5,5))
 sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
 plt.xlabel("y_pred")
 plt.ylabel("y_true")
-plt.show() """
+plt.show()
 
 # et_train = et.predict(X_train)
 # et_test = et.predict(X_test)
-joblib.dump(et, 'et.pkl') #pour sauvegarder le modèle
+# joblib.dump(et, 'et.pkl') #pour sauvegarder le modèle
 
 
 """ 
@@ -175,7 +175,7 @@ y_predict=xg.predict(X_test)
 y_true=y_test
 # default_params = xg.get_params()
 # print("Default parameters: ", default_params)
-""" print('Accuracy of XGBoost: '+ str(xg_score))
+print('Accuracy of XGBoost: '+ str(xg_score))
 precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
 print('Precision of XGBoost: '+(str(precision)))
 print('Recall of XGBoost: '+(str(recall)))
@@ -186,10 +186,10 @@ f,ax=plt.subplots(figsize=(5,5))
 sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
 plt.xlabel("y_pred")
 plt.ylabel("y_true")
-plt.show() """
+plt.show()
 # xg_train = xg.predict(X_train)
 # xg_test = xg.predict(X_test)
-joblib.dump(xg, 'xg.pkl') #pour sauvegarder le modèle
+# joblib.dump(xg, 'xg.pkl') #pour sauvegarder le modèle
 
 
 #Feature Selection 
@@ -213,4 +213,4 @@ for i in range(0, len(f_list)):
 X_fs = dataset[fs].values
 X_train, X_test, y_train, y_test = train_test_split(X_fs,y, train_size = 0.8, test_size = 0.2, random_state = 0,stratify = y)
 print(X_train.shape)
-joblib.dump(X_fs, 'X_fs.pkl')
+# joblib.dump(X_fs, 'X_fs.pkl')
