@@ -68,21 +68,21 @@ if(os.path.exists('dt.pkl')):
 else:
     dt=DecisionTreeClassifier(random_state=42)
     dt.fit(X_train, y_train)
-dt_score=dt.score(X_test,y_test)
-y_predict=dt.predict(X_test)
-y_true=y_test
-print('Accuracy of DT: '+ str(dt_score))
-precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
-print('Precision of DT: '+(str(precision)))
-print('Recall of DT: '+(str(recall)))
-print('F1-score of DT: '+(str(fscore)))
-print(classification_report(y_true,y_predict))
-cm=confusion_matrix(y_true,y_predict)
-f,ax=plt.subplots(figsize=(5,5))
-sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
-plt.xlabel("y_pred")
-plt.ylabel("y_true")
-plt.show()
+# dt_score=dt.score(X_test,y_test)
+# y_predict=dt.predict(X_test)
+# y_true=y_test
+# print('Accuracy of DT: '+ str(dt_score))
+# precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
+# print('Precision of DT: '+(str(precision)))
+# print('Recall of DT: '+(str(recall)))
+# print('F1-score of DT: '+(str(fscore)))
+# print(classification_report(y_true,y_predict))
+# cm=confusion_matrix(y_true,y_predict)
+# f,ax=plt.subplots(figsize=(5,5))
+# sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
+# plt.xlabel("y_pred")
+# plt.ylabel("y_true")
+# plt.show()
 # dt_train = dt.predict(X_train)
 # dt_test = dt.predict(X_test)
 
@@ -96,21 +96,21 @@ if (os.path.exists('rf.pkl')):
 else:
     rf = RandomForestClassifier(random_state = 0)
     rf.fit(X_train,y_train) 
-rf_score=rf.score(X_test,y_test)
-y_predict=rf.predict(X_test)
-y_true=y_test
-print('Accuracy of RF: '+ str(rf_score))
-precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
-print('Precision of RF: '+(str(precision)))
-print('Recall of RF: '+(str(recall)))
-print('F1-score of RF: '+(str(fscore)))
-print(classification_report(y_true,y_predict))
-cm=confusion_matrix(y_true,y_predict)
-f,ax=plt.subplots(figsize=(5,5))
-sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
-plt.xlabel("y_pred")
-plt.ylabel("y_true")
-plt.show()  
+# rf_score=rf.score(X_test,y_test)
+# y_predict=rf.predict(X_test)
+# y_true=y_test
+# print('Accuracy of RF: '+ str(rf_score))
+# precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
+# print('Precision of RF: '+(str(precision)))
+# print('Recall of RF: '+(str(recall)))
+# print('F1-score of RF: '+(str(fscore)))
+# print(classification_report(y_true,y_predict))
+# cm=confusion_matrix(y_true,y_predict)
+# f,ax=plt.subplots(figsize=(5,5))
+# sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
+# plt.xlabel("y_pred")
+# plt.ylabel("y_true")
+# plt.show()  
 # rf_train = rf.predict(X_train)
 # rf_test = rf.predict(X_test)
 # joblib.dump(rf, 'rf.pkl') #pour sauvegarder le modèle
@@ -122,22 +122,22 @@ if (os.path.exists('et.pkl')):
 else:
     et = ExtraTreesClassifier(random_state = 0)
     et.fit(X_train,y_train) 
-et_score=et.score(X_test,y_test)
-y_predict=et.predict(X_test)
-y_true=y_test
-print('Accuracy of ET: '+ str(et_score))
-precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
-print('Precision of ET: '+(str(precision)))
-print('Recall of ET: '+(str(recall)))
-print('F1-score of ET: '+(str(fscore)))
-print(classification_report(y_true,y_predict))
-cm=confusion_matrix(y_true,y_predict)
-f,ax=plt.subplots(figsize=(5,5))
-sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
-plt.xlabel("y_pred")
-plt.ylabel("y_true")
-plt.show()
-
+# et_score=et.score(X_test,y_test)
+# y_predict=et.predict(X_test)
+# y_true=y_test
+# print('Accuracy of ET: '+ str(et_score))
+# precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
+# print('Precision of ET: '+(str(precision)))
+# print('Recall of ET: '+(str(recall)))
+# print('F1-score of ET: '+(str(fscore)))
+# print(classification_report(y_true,y_predict))
+# cm=confusion_matrix(y_true,y_predict)
+# f,ax=plt.subplots(figsize=(5,5))
+# sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
+# plt.xlabel("y_pred")
+# plt.ylabel("y_true")
+# plt.show()
+#
 # et_train = et.predict(X_train)
 # et_test = et.predict(X_test)
 # joblib.dump(et, 'et.pkl') #pour sauvegarder le modèle
@@ -170,23 +170,23 @@ if (os.path.exists('xg.pkl')):
 else:   
     xg = xgb.XGBClassifier(n_estimators = 10)
     xg.fit(X_train,y_train)
-xg_score=xg.score(X_test,y_test)
-y_predict=xg.predict(X_test)
-y_true=y_test
+# xg_score=xg.score(X_test,y_test)
+# y_predict=xg.predict(X_test)
+# y_true=y_test
 # default_params = xg.get_params()
 # print("Default parameters: ", default_params)
-print('Accuracy of XGBoost: '+ str(xg_score))
-precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
-print('Precision of XGBoost: '+(str(precision)))
-print('Recall of XGBoost: '+(str(recall)))
-print('F1-score of XGBoost: '+(str(fscore)))
-print(classification_report(y_true,y_predict))
-cm=confusion_matrix(y_true,y_predict)
-f,ax=plt.subplots(figsize=(5,5))
-sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
-plt.xlabel("y_pred")
-plt.ylabel("y_true")
-plt.show()
+# print('Accuracy of XGBoost: '+ str(xg_score))
+# precision,recall,fscore,none= precision_recall_fscore_support(y_true, y_predict, average='weighted') 
+# print('Precision of XGBoost: '+(str(precision)))
+# print('Recall of XGBoost: '+(str(recall)))
+# print('F1-score of XGBoost: '+(str(fscore)))
+# print(classification_report(y_true,y_predict))
+# cm=confusion_matrix(y_true,y_predict)
+# f,ax=plt.subplots(figsize=(5,5))
+# sns.heatmap(cm,annot=True,linewidth=0.5,linecolor="red",fmt=".0f",ax=ax)
+# plt.xlabel("y_pred")
+# plt.ylabel("y_true")
+# plt.show()
 # xg_train = xg.predict(X_train)
 # xg_test = xg.predict(X_test)
 # joblib.dump(xg, 'xg.pkl') #pour sauvegarder le modèle
@@ -201,7 +201,11 @@ xgb_feature = xg.feature_importances_
 
 avg_feature = (dt_feature + rf_feature + et_feature + xgb_feature) / 4
 feature=(dataset.drop([' Label'],axis=1)).columns.values
-f_list = sorted(zip(map(lambda x: round(x, 4), avg_feature), feature), reverse=True)
+f_list = tuple(zip(map(lambda x: round(x, 4), avg_feature), feature)) # sorted(zip(map(lambda x: round(x, 4), avg_feature), feature), reverse=True)
+selected_df = pd.DataFrame(f_list, columns=["Feature", "Importance"])
+selected_df.to_csv("ordered_features.csv", index=False)
+exit(0)
+print('Feature list : ' ,f_list)
 # Select the important features from top-importance to bottom-importance until the accumulated importance reaches 0.9 (out of 1)
 Sum = 0
 fs = []
@@ -210,14 +214,13 @@ for i in range(0, len(f_list)):
     Sum = Sum + f_list[i][0]
     fs.append(f_list[i][1])
     selected_features.append((f_list[i][1], f_list[i][0]))
-    # print("Feature: ", f_list[i][1], " Importance: ", f_list[i][0])
     if Sum>=0.9:
         break
 X_fs = dataset[fs].values
 
 # Sauvegarde dans un fichier CSV
-# selected_df = pd.DataFrame(selected_features, columns=["Feature", "Importance"])
-# selected_df.to_csv("selected_features.csv", index=False)
+selected_df = pd.DataFrame(selected_features, columns=["Feature", "Importance"])
+selected_df.to_csv("ordered_features.csv", index=False)
 
 # X_train, X_test, y_train, y_test = train_test_split(X_fs,y, train_size = 0.8, test_size = 0.2, random_state = 0,stratify = y)
 # print(X_train.shape)
