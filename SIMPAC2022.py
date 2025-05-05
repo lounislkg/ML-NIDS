@@ -205,12 +205,20 @@ f_list = sorted(zip(map(lambda x: round(x, 4), avg_feature), feature), reverse=T
 # Select the important features from top-importance to bottom-importance until the accumulated importance reaches 0.9 (out of 1)
 Sum = 0
 fs = []
+selected_features = []
 for i in range(0, len(f_list)):
     Sum = Sum + f_list[i][0]
     fs.append(f_list[i][1])
+    selected_features.append((f_list[i][1], f_list[i][0]))
+    # print("Feature: ", f_list[i][1], " Importance: ", f_list[i][0])
     if Sum>=0.9:
         break
 X_fs = dataset[fs].values
-X_train, X_test, y_train, y_test = train_test_split(X_fs,y, train_size = 0.8, test_size = 0.2, random_state = 0,stratify = y)
-print(X_train.shape)
+
+# Sauvegarde dans un fichier CSV
+# selected_df = pd.DataFrame(selected_features, columns=["Feature", "Importance"])
+# selected_df.to_csv("selected_features.csv", index=False)
+
+# X_train, X_test, y_train, y_test = train_test_split(X_fs,y, train_size = 0.8, test_size = 0.2, random_state = 0,stratify = y)
+# print(X_train.shape)
 # joblib.dump(X_fs, 'X_fs.pkl')
