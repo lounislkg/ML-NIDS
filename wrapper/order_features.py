@@ -1,6 +1,40 @@
 import pandas as pd
 
-# Dictionnaire de correspondance entre noms CICFlowMeter et noms du modèle
+original_ordered_features = [
+    "Packet Length Variance",
+    "Fwd Packet Length Max",
+    "Subflow Fwd Bytes",
+    "PSH Flag Count",
+    "Bwd Packet Length Std",
+    "Total Length of Fwd Packets",
+    "act_data_pkt_fwd",
+    "Destination Port",
+    "Bwd Packets/s",
+    "Fwd IAT Max",
+    "Bwd Packet Length Mean",
+    "Avg Bwd Segment Size",
+    "Packet Length Std",
+    "Average Packet Size",
+    "Packet Length Mean",
+    "ACK Flag Count",
+    "Max Packet Length",
+    "Bwd Packet Length Max",
+    "Avg Fwd Segment Size",
+    "Init_Win_bytes_forward",
+    "Bwd Packet Length Min",
+    "Fwd Packet Length Mean",
+    "Flow Bytes/s",
+    "Total Backward Packets",
+    "Total Fwd Packets",
+    "Flow Duration",
+    "Subflow Fwd Packets",
+    "Flow IAT Max",
+    "Fwd IAT Std",
+    "Subflow Bwd Bytes",
+    "Fwd IAT Total",
+    "Flow IAT Std"
+]
+
 cic_to_model = {
     "dst_port": "Destination Port",
     "flow_duration": "Flow Duration",
@@ -51,12 +85,13 @@ cic_to_model = {
     "psh_flag_cnt": "PSH Flag Count",
     "ack_flag_cnt": "ACK Flag Count",
     "urg_flag_cnt": "URG Flag Count",
+    "cwe_flag_cnt": "CWE Flag Count",  # Il faut l'ajouter manuellement
     "ece_flag_cnt": "ECE Flag Count",  # Remplace CWE Flag Count
     "down_up_ratio": "Down/Up Ratio",
     "pkt_size_avg": "Average Packet Size",
     "fwd_seg_size_avg": "Avg Fwd Segment Size",
     "bwd_seg_size_avg": "Avg Bwd Segment Size",
-    "fwd_header_len": "Fwd Header Length.1",  # Dupliqué
+    # "fwd_header_len": "Fwd Header Length.1",  # Dupliqué il faut l'ajouter manuellement
     "fwd_byts_b_avg": "Fwd Avg Bytes/Bulk",
     "fwd_pkts_b_avg": "Fwd Avg Packets/Bulk",
     "fwd_blk_rate_avg": "Fwd Avg Bulk Rate",
@@ -80,40 +115,122 @@ cic_to_model = {
     "idle_max": "Idle Max",
     "idle_min": "Idle Min",
 }
+#
+# cicflow_data = {
+#     "dst_port": 443,
+#     "flow_duration": 100000,
+#     "tot_fwd_pkts": 10,
+#     "tot_bwd_pkts": 12,
+#     "totlen_fwd_pkts": 1200.0,
+#     "totlen_bwd_pkts": 1500.0,
+#     "fwd_pkt_len_max": 300.0,
+#     "fwd_pkt_len_min": 50.0,
+#     "fwd_pkt_len_mean": 120.0,
+#     "fwd_pkt_len_std": 40.0,
+#     "bwd_pkt_len_max": 400.0,
+#     "bwd_pkt_len_min": 60.0,
+#     "bwd_pkt_len_mean": 125.0,
+#     "bwd_pkt_len_std": 50.0,
+#     "flow_byts_s": 25000.0,
+#     "flow_pkts_s": 220.0,
+#     "flow_iat_mean": 1000.0,
+#     "flow_iat_std": 300.0,
+#     "flow_iat_max": 5000.0,
+#     "flow_iat_min": 100.0,
+#     "fwd_iat_tot": 5000.0,
+#     "fwd_iat_mean": 500.0,
+#     "fwd_iat_std": 150.0,
+#     "fwd_iat_max": 2000.0,
+#     "fwd_iat_min": 100.0,
+#     "bwd_iat_tot": 6000.0,
+#     "bwd_iat_mean": 600.0,
+#     "bwd_iat_std": 180.0,
+#     "bwd_iat_max": 2500.0,
+#     "bwd_iat_min": 120.0,
+#     "fwd_psh_flags": 0,
+#     "bwd_psh_flags": 1,
+#     "fwd_urg_flags": 0,
+#     "bwd_urg_flags": 0,
+#     "fwd_header_len": 160,
+#     "bwd_header_len": 180,
+#     "fwd_pkts_s": 100.0,
+#     "bwd_pkts_s": 120.0,
+#     "pkt_len_min": 50.0,
+#     "pkt_len_max": 400.0,
+#     "pkt_len_mean": 130.0,
+#     "pkt_len_std": 45.0,
+#     "pkt_len_var": 2025.0,
+#     "fin_flag_cnt": 0,
+#     "syn_flag_cnt": 1,
+#     "rst_flag_cnt": 0,
+#     "psh_flag_cnt": 1,
+#     "ack_flag_cnt": 10,
+#     "urg_flag_cnt": 0,
+#     "ece_flag_cnt": 0,
+#     "down_up_ratio": 1.2,
+#     "pkt_size_avg": 140.0,
+#     "fwd_seg_size_avg": 125.0,
+#     "bwd_seg_size_avg": 130.0,
+#     "fwd_byts_b_avg": 0.0,
+#     "fwd_pkts_b_avg": 0.0,
+#     "fwd_blk_rate_avg": 0.0,
+#     "bwd_byts_b_avg": 0.0,
+#     "bwd_pkts_b_avg": 0.0,
+#     "bwd_blk_rate_avg": 0.0,
+#     "subflow_fwd_pkts": 10,
+#     "subflow_fwd_byts": 1200,
+#     "subflow_bwd_pkts": 12,
+#     "subflow_bwd_byts": 1500,
+#     "init_fwd_win_byts": 65535,
+#     "init_bwd_win_byts": 65535,
+#     "fwd_act_data_pkts": 8,
+#     "fwd_seg_size_min": 20,
+#     "active_mean": 20000.0,
+#     "active_std": 1000.0,
+#     "active_max": 30000.0,
+#     "active_min": 15000.0,
+#     "idle_mean": 50000.0,
+#     "idle_std": 2000.0,
+#     "idle_max": 80000.0,
+#     "idle_min": 30000.0,
+# }
 
-# Ordre attendu par le modèle
-ordered_model_features = [
-    "Destination Port", "Flow Duration", "Total Fwd Packets", "Total Backward Packets",
-    "Total Length of Fwd Packets", "Total Length of Bwd Packets", "Fwd Packet Length Max",
-    "Fwd Packet Length Min", "Fwd Packet Length Mean", "Fwd Packet Length Std",
-    "Bwd Packet Length Max", "Bwd Packet Length Min", "Bwd Packet Length Mean",
-    "Bwd Packet Length Std", "Flow Bytes/s", "Flow Packets/s", "Flow IAT Mean",
-    "Flow IAT Std", "Flow IAT Max", "Flow IAT Min", "Fwd IAT Total", "Fwd IAT Mean",
-    "Fwd IAT Std", "Fwd IAT Max", "Fwd IAT Min", "Bwd IAT Total", "Bwd IAT Mean",
-    "Bwd IAT Std", "Bwd IAT Max", "Bwd IAT Min", "Fwd PSH Flags", "Bwd PSH Flags",
-    "Fwd URG Flags", "Bwd URG Flags", "Fwd Header Length", "Bwd Header Length",
-    "Fwd Packets/s", "Bwd Packets/s", "Min Packet Length", "Max Packet Length",
-    "Packet Length Mean", "Packet Length Std", "Packet Length Variance", "FIN Flag Count",
-    "SYN Flag Count", "RST Flag Count", "PSH Flag Count", "ACK Flag Count",
-    "URG Flag Count", "CWE Flag Count", "ECE Flag Count", "Down/Up Ratio",
-    "Average Packet Size", "Avg Fwd Segment Size", "Avg Bwd Segment Size",
-    "Fwd Header Length.1", "Fwd Avg Bytes/Bulk", "Fwd Avg Packets/Bulk",
-    "Fwd Avg Bulk Rate", "Bwd Avg Bytes/Bulk", "Bwd Avg Packets/Bulk",
-    "Bwd Avg Bulk Rate", "Subflow Fwd Packets", "Subflow Fwd Bytes",
-    "Subflow Bwd Packets", "Subflow Bwd Bytes", "Init_Win_bytes_forward",
-    "Init_Win_bytes_backward", "act_data_pkt_fwd", "min_seg_size_forward",
-    "Active Mean", "Active Std", "Active Max", "Active Min",
-    "Idle Mean", "Idle Std", "Idle Max", "Idle Min"
-]
 
+# def reorder_features(cicflow_data: dict) -> pd.DataFrame:
+#     # Remap les noms
+#     model_data = {
+#         model_name: cicflow_data[cic_name] for cic_name, model_name in cic_to_model.items() if model_name in filtered_ordered_features and cic_name in cicflow_data
+#     }
+#     # DataFrame dans le bon ordre
+#     df = pd.DataFrame([model_data])[filtered_ordered_features]
+#     return df
+
+# if __name__ == "__main__":
+#     # Exemple d'utilisation
+#     df = reorder_features(cicflow_data)
+#     print(df.head())
+#     print(df.shape)
 def reorder_features(cicflow_data: dict) -> pd.DataFrame:
-    # Remap les noms
-    model_data = {
-        model_name: cicflow_data[cic_name]
-        for cic_name, model_name in cic_to_model.items()
-        if model_name in ordered_model_features and cic_name in cicflow_data
-    }
-    # DataFrame dans le bon ordre
-    df = pd.DataFrame([model_data])[ordered_model_features]
-    return df
+    model_data = {}
+    for i in range(0, len(cicflow_data.keys())):
+        key = list(cicflow_data.keys())[i]
+        model_name = cic_to_model.get(key)
+        if model_name is not None:
+            model_data[model_name] = cicflow_data[key]
+        else:
+            print("Key not found in cic_to_model:", key)
 
+    # model_data_ordered = {k: model_data[k] for k in original_ordered_features if k in model_data}
+    model_data_ordered = {}
+    key_founded = 0
+    for k in original_ordered_features:
+        if k in model_data:
+            model_data_ordered[k] = model_data[k]
+            key_founded += 1
+        else:
+            print("Key not found in model_data:", k)
+    print(model_data_ordered)
+    print("length model_data_ordered:", len(model_data_ordered.keys()))
+    # DataFrame dans le bon ordre
+    df = pd.DataFrame([model_data_ordered])
+    return df

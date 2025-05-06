@@ -1,20 +1,46 @@
 import numpy as np
+import requests
 import pandas as pd
 import joblib
+import json
 
-X_fs = joblib.load('X_fs.pkl')
-y = joblib.load('y.pkl')
+
+X_fs = joblib.load('../X_fs.pkl')
+y = pd.DataFrame(joblib.load('../y.pkl'))
 X = pd.DataFrame(X_fs)
 
-batch = X.sample(50, random_state=42)
+batch = X[0:4].values
+batch_y = y[0:4].values
+print(batch[0][0:4])
+print(batch_y)
+# df = pd.read_csv("../MachineLearningCVE/dataSampled_Grouped.csv")
+# batch = df.sample(1)
+# # request localhost 
 
-# request localhost 
-import requests
+BENIGN = 0
+exemple = [
+        [443,5248576,6,4,611,164,517,0,101.8333333,204.3050823,152,0,41.0,74.05403433,147.6590984,1.905278689,583175.1111,1706737.873,5134206,3,5248576,1049715.2,2316355.578,5193255,3,94769,31589.66667,34456.97712,70306,4290,0,0,0,0,132,92,1.143167213,0.762111476,0,517,70.45454545,154.756818,23949.67273,0,0,0,1,0,0,0,0,0,77.5,101.8333333,41.0,132,0,0,0,0,0,0,6,611,4,164,8192,30,5,20,114367.0,0.0,114367,114367,5134206.0,0.0,5134206,5134206,BENIGN],
+        [53,30654,1,1,49,65,49,49,49.0,0.0,65,65,65.0,0.0,3718.927383,65.24434005,30654.0,0.0,30654,30654,0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,0,20,20,32.62217003,32.62217003,49,65,54.33333333,9.237604307,85.33333333,0,0,0,0,0,0,0,0,1,81.5,49.0,65.0,20,0,0,0,0,0,0,1,49,1,65,-1,-1,0,20,0.0,0.0,0,0,0.0,0.0,0,0,BENIGN],
+        [50325,11163927,1,6,6,36,6,6,6.0,0.0,6,6,6.0,0.0,3.76211704,0.627019507,1860654.5,4551742.758,11200000,0,0,0.0,0.0,0,0,11200000,2231747.8,4986494.349,11200000,0,0,0,0,0,20,120,0.089574215,0.537445291,6,6,6.0,0.0,0.0,0,0,0,0,1,1,0,0,6,6.857142857,6.0,6.0,20,0,0,0,0,0,0,1,6,6,36,229,0,0,20,12068.0,0.0,12068,12068,11200000.0,0.0,11200000,11200000,BENIGN],
+        [41346,3,2,0,31,0,31,0,15.5,21.92031022,0,0,0.0,0.0,10300000.0,666666.6667,3.0,0.0,3,3,3,3.0,0.0,3,3,0,0.0,0.0,0,0,1,0,0,0,64,0,666666.6667,0.0,0,31,20.66666667,17.89785834,320.3333333,0,1,0,0,1,0,0,0,0,31.0,15.5,0.0,64,0,0,0,0,0,0,2,31,0,0,61,-1,0,32,0.0,0.0,0,0,0.0,0.0,0,0,BENIGN]
+        ]
+cicflow_data = {"dst_port": 57838, "flow_duration": 120.11630535125732, "flow_byts_s": 23.73532878540338, "bwd_pkts_s": 0.09990317272004229, "tot_fwd_pkts": 12, "tot_bwd_pkts": 12, "totlen_fwd_pkts": 1185, "fwd_pkt_len_max": 139, "fwd_pkt_len_mean": 98.75, "bwd_pkt_len_max": 263, "bwd_pkt_len_min": 66, "bwd_pkt_len_mean": 138.83333333333334, "bwd_pkt_len_std": 88.21170872143651, "pkt_len_max": 263, "pkt_len_mean": 118.79166666666667, "pkt_len_std": 68.92385845183718, "pkt_len_var": 4750.498263888888, "fwd_act_data_pkts": 8, "flow_iat_max": 59.87352728843689, "flow_iat_std": 13.31933989428744, "fwd_iat_tot": 120.11630535125732, "fwd_iat_max": 59.87352728843689, "fwd_iat_std": 17.59415690145774, "psh_flag_cnt": 15, "ack_flag_cnt": 24, "pkt_size_avg": 118.79166666666667, "init_fwd_win_byts": 74, "fwd_seg_size_avg": 98.75, "bwd_seg_size_avg": 138.83333333333334, "subflow_fwd_pkts": 12, "subflow_fwd_byts": 1185, "subflow_bwd_byts": 1666}
 
-url = 'http://localhost:8000/predict'
-myobj = {'data': batch.to_dict(orient='records')}
-print(myobj)
 
-x = requests.post(url, json = myobj)
+# Create 3 new samples
+new_samples = []
+# for i in range(0):
+sample = dict() 
+index = 0
+for key, value in cicflow_data.items():
+    sample[key] = batch[0][index] 
+    index += 1
+new_samples.append(sample)
+
+url = 'http://localhost:8000/test'
+# myobj = json.dumps(new_samples[0])
+x = requests.post(url, json = new_samples[0])
 
 print(x.text)
+
+
