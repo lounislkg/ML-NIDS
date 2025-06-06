@@ -29,9 +29,6 @@ X.replace([np.inf, -np.inf], np.nan, inplace=True)
 #fill NaN values
 X = X.fillna(0)
 
-sc = MinMaxScaler()
-X = sc.fit_transform(X)
-
 labelencoder = LabelEncoder()
 y = labelencoder.fit_transform(y)
 
@@ -89,7 +86,7 @@ joblib.dump((pipeline, labelencoder), 'stacking_model.joblib')  # Extension reco
 print(f"Temps d'inférence pour {len(X_test)} échantillons : {end - start:.6f} secondes")
 print(f"Temps moyen par échantillon : {(end - start)/len(X_test):.6f} secondes")
 
-# ----- Affi
+# ----- Affichage
 print("Rapport de classification du modèle empilé")
 print(classification_report(y_test, y_pred))
 
@@ -100,3 +97,17 @@ disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
 disp.plot(cmap=plt.cm.Blues)
 plt.title("Matrice de confusion")
 plt.show()
+
+# ------ Test du modèle ------
+X_batch = joblib.load('X_fs.pkl')
+X = pd.DataFrame(X_batch)
+X.replace([np.inf, -np.inf], np.nan, inplace=True)
+X.fillna(0, inplace=True)
+
+
+batch = X_batch[0].reshape(1, -1)
+print(batch)
+prediction = pipeline.predict(batch)
+print(prediction)
+print(labelencoder.inverse_transform(prediction))
+

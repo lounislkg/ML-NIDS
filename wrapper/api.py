@@ -28,20 +28,13 @@ async def read_root():
 
 #@app.post("/predict")
 async def predict(df: pd.DataFrame):
-    # Convertir les données d'entrée en DataFrame
-    # print(df.shape)
-    # print(df.head(2))
     # Remplacer les valeurs infinies par NaN
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
 
     # Remplir les valeurs NaN
     df = df.fillna(0)
-    # print(pipeline)
-    # Normaliser les données
-    # df = pipeline['scaler'].transform(df)
     np_arr = df.to_numpy()
     # Prédire avec le modèle 
-    print(np_arr)
     prediction = pipeline.predict(np_arr)
     predict_proba = pipeline.predict_proba(np_arr)
     # print(prediction)
@@ -53,8 +46,11 @@ async def flow(request: Request):
     body = await request.body()
     data_dict = json.loads(body.decode('utf-8'))
     df = of.reorder_features(data_dict)
-    # prediction = await predict(df)
-    # print(prediction)
+    prediction = await predict(df)
+    if prediction[0][0] != 0:
+        print("Malicious flow detected")
+        print(df)
+        # Add mysql connnection to log the malicious flow
     return {"message": "ok"}
 
 

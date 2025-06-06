@@ -135,14 +135,19 @@
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
-X_fs = joblib.load('../X_fs.pkl')
-X_fs = pd.DataFrame(X_fs)
+X = joblib.load('../X_fs.pkl')
+# X_fs = pd.DataFrame(X_fs)
 y = pd.DataFrame(joblib.load('../y.pkl'))
-print(y[0])
-print(type(X_fs))
-print(X_fs.tail(2))
-pipeline, le = joblib.load('stacking_model.joblib')
-batch = X_fs[0].reshape(1, -1)
-prediction = pipeline.predict(batch)
-print("Prediction: ", prediction)
+pipeline, le = joblib.load("../stacking_model.joblib")
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=1
+)
+
+y_train = y_train.values.ravel()  # Convert to 1D array
+y_test = y_test.values.ravel()  # Convert to 1D array
+y_pred = pipeline.predict([X_train[0]])
+print("Predicted label:", y_pred[0], "True label:", y_train[0])
+y_pred_test = pipeline.predict(X_test[0].reshape(1, -1))
+print("Predicted label for test data:", y_pred_test[0], "True label:", y_test[0])

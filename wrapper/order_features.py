@@ -229,8 +229,8 @@ def reorder_features(cicflow_data: dict) -> pd.DataFrame:
             key_founded += 1
         else:
             print("Key not found in model_data:", k)
-    print(model_data_ordered)
-    print("length model_data_ordered:", len(model_data_ordered.keys()))
+    # print(model_data_ordered)
+    # print("length model_data_ordered:", len(model_data_ordered.keys()))
     # DataFrame dans le bon ordre
     df = pd.DataFrame([model_data_ordered])
     return df
