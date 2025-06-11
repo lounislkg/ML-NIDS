@@ -1,0 +1,25 @@
+# api/Dockerfile
+FROM python:3.13
+
+# Empêche Python de bufferiser la sortie
+ENV PYTHONUNBUFFERED=1
+
+# Dépendances système si nécessaire (curl, gcc, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crée un dossier de travail dans le conteneur
+WORKDIR ./
+
+# Copie les fichiers
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY api.py ./
+COPY order_order_features.py ./
+
+
+# Commande par défaut : lance l'API FastAPI avec Uvicorn
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "critical"]
+

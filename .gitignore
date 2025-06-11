@@ -8,3 +8,4 @@ rootme
 *.h5
 *.joblib
 __pycache__
+./wrapper/cicflowmeter
